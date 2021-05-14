@@ -2,6 +2,7 @@
 
 `noppefoxwolf/notion` is a notion.so API library written in `swift`.
 
+![](https://github.com/noppefoxwolf/notion/blob/main/.github/fox.jpg)
 
 # Installation
 

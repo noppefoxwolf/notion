@@ -65,7 +65,7 @@ session.send(V1.Users.List()).sink { result in
 
 ## database
 
-- [-] List databases
+~~List databases~~
 - [ ] Query a database
 - [x] Retrieve a database
  

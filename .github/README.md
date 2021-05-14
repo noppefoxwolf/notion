@@ -13,6 +13,8 @@ Project > Swift Packages
 git@github.com:noppefoxwolf/notion.git
 ```
 
+![](https://github.com/noppefoxwolf/notion/blob/main/.github/xcode.jpg)
+
 ## Swift Package Manager
 
 Append following line to Package.swift.
@@ -33,7 +35,7 @@ session.send(V1.Users.List()).sink { result in
 }.store(in: &cancellables)
 ```
 
-# Features
+# Support features
 
 ## integration
 

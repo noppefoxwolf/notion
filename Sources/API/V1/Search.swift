@@ -24,7 +24,7 @@ extension V1.Search {
         public var path: String { "/v1/search" }
         public let method: HTTPMethod = .post
         public let httpBody: Data?
-        public typealias Response = Object.List<Object.Database>
+        public typealias Response = Object.List<Object.SearchResult>
     }
 }
 

@@ -50,24 +50,24 @@ session.send(V1.Users.List()).sink { result in
 
 ## search
 
-- [ ] Search
+- [x] Search
 
 ## block
   
-- [ ] Retrieve block children
+- [x] Retrieve block children
 - [ ] Append block children
 
 ## page
 
 - [ ] Update page properties
 - [ ] Create a page
-- [ ] Retrieve a page
+- [x] Retrieve a page
 
 ## database
 
-- [ ] List databases
+- [-] List databases
 - [ ] Query a database
-- [ ] Retrieve a database
+- [x] Retrieve a database
  
 # API Documents
 

@@ -44,6 +44,7 @@ extension Request {
         request.allHTTPHeaderFields = headerFields
         request.httpMethod = method.rawValue
         request.httpBody = httpBody
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         return request
     }
 }

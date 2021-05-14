@@ -53,7 +53,6 @@ public extension RichText {
         case text(Text)
         case mention(Mention)
         case equation(Equation)
-        
     }
 }
 

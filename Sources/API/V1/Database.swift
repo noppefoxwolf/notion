@@ -22,14 +22,6 @@ extension V1.Databases {
         public typealias Response = Object.Database
     }
     
-    public struct List: Request {
-        public init() {}
-        
-        public var path: String { "/v1/databases" }
-        public let method: HTTPMethod = .get
-        public typealias Response = Object.List<Object.Database>
-    }
-    
     public struct Query: Request {
         public init(id: String) {
             self.id = id

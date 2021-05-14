@@ -11,13 +11,17 @@ import Object
 extension V1.Blocks {
     /// Retrieve a user
     /// - Parameters id: block_id
-    public struct User: Request {
+    public struct Children: Request {
+        public init(id: Block.ID) {
+            self.id = id
+        }
+        
         public var path: String { "/v1/blocks/\(id)/children" }
         public let id: String
-        public let startCursor: String
-        public let pageSize: String
+//        public let startCursor: String
+//        public let pageSize: String
         public let method: HTTPMethod = .get
-        public typealias Response = Object.List<Object.User>
+        public typealias Response = Object.List<Object.Block>
     }
     
     public struct Append: Request {

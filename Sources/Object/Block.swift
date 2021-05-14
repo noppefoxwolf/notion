@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct Block: Decodable {
-    let object: String
-    let id: String
-    let type: TypeValue
-    let createdTime: Date
-    let lastEditedTime: Date
-    let hasChildren: Bool
+public struct Block: Decodable, Identifiable {
+    public let object: String
+    public let id: String
+    public let type: TypeValue
+    public let createdTime: Date
+    public let lastEditedTime: Date
+    public let hasChildren: Bool
 }
 
 extension Block {
@@ -39,7 +39,7 @@ extension Block {
         case unsupported = "unsupported"
     }
     
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: TypedAnyCodingKey<CodingKey>.self)
         object = try container.decode(forKey: .init(.object))
         id = try container.decode(forKey: .init(.id))
@@ -82,7 +82,7 @@ extension Block {
 }
 
 extension Block {
-    enum TypeValue {
+    public enum TypeValue {
         case paragraph(Paragraph)
         case heading1(Heading1)
         case heading2(Heading2)
@@ -97,39 +97,39 @@ extension Block {
 }
 
 extension Block.TypeValue {
-    struct Paragraph: Decodable {
-        let text: [RichText]
-        let children: [Block]?
+    public struct Paragraph: Decodable {
+        public let text: [RichText]
+        public let children: [Block]?
     }
-    struct Heading1: Decodable {
-        let text: [RichText]
+    public struct Heading1: Decodable {
+        public let text: [RichText]
     }
-    struct Heading2: Decodable {
-        let text: [RichText]
+    public struct Heading2: Decodable {
+        public let text: [RichText]
     }
-    struct Heading3: Decodable {
-        let text: [RichText]
+    public struct Heading3: Decodable {
+        public let text: [RichText]
     }
-    struct BulletedListItem: Decodable {
-        let text: [RichText]
-        let children: [Block]?
+    public struct BulletedListItem: Decodable {
+        public let text: [RichText]
+        public let children: [Block]?
     }
-    struct NumberedListItem: Decodable {
-        let text: [RichText]
-        let children: [Block]?
+    public struct NumberedListItem: Decodable {
+        public let text: [RichText]
+        public let children: [Block]?
     }
-    struct ToDo: Decodable {
-        let text: [RichText]
-        let checked: Bool
-        let children: [Block]?
+    public struct ToDo: Decodable {
+        public let text: [RichText]
+        public let checked: Bool
+        public let children: [Block]?
     }
-    struct Toggle: Decodable {
-        let text: [RichText]
-        let children: [Block]?
+    public struct Toggle: Decodable {
+        public let text: [RichText]
+        public let children: [Block]?
     }
-    struct ChildPage: Decodable {
-        let title: String
+    public struct ChildPage: Decodable {
+        public let title: String
     }
-    struct Unsupported: Decodable {
+    public struct Unsupported: Decodable {
     }
 }

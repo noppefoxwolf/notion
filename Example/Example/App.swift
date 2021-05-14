@@ -6,12 +6,17 @@
 //
 
 import SwiftUI
+import API
 
 @main
 struct App: SwiftUI.App {
     var body: some Scene {
         WindowGroup {
-            ContentView(viewModel: .init())
+            RootView(viewModel: .init()).environment(\.notion, {
+                let session = Session.shared
+                session.setAuthorization(token: "")
+                return session
+            }())
         }
     }
 }

@@ -23,26 +23,13 @@ extension V1.Databases {
     }
     
     public struct Query: Request {
-        public init(id: String) {
+        public init(id: Object.Database.ID) {
             self.id = id
         }
-        
         public var path: String { "/v1/databases/\(id)/query" }
         public let id: String
         public let method: HTTPMethod = .post
-        public var parameters: [String : Any] {
-            [
-                "filter" : "",
-                "sorts" : "",
-                "start_cursor" : "",
-                "page_size" : ""
-            ]
-        }
         public typealias Response = Object.List<Object.Page>
     }
 }
 
-struct Filter {
-    let property: String
-    
-}

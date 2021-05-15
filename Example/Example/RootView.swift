@@ -19,27 +19,28 @@ struct RootView: View {
             SwiftUI.List {
                 Section(header: Text("Users")) {
                     ForEach(viewModel.users) { (user) in
-                        NavigationLink(destination: Text(user.name ?? "-")) {
+                        NavigationLink(destination: UserView(viewModel: .init(id: user.id))) {
                             Text(user.name ?? "-")
                         }
                     }
                 }
                 Section(header: Text("Databases")) {
                     ForEach(viewModel.databases) { (database) in
-                        NavigationLink(destination: DBView(viewModel: .init(id: database.id))) {
+                        NavigationLink(destination: DatabaseView(viewModel: .init(id: database.id))) {
                             Text(database.title.first?.plainText ?? database.id)
                         }
                     }
                 }
                 Section(header: Text("Pages")) {
                     ForEach(viewModel.pages) { (page) in
-                        NavigationLink(destination: Text(page.id)) {
+                        NavigationLink(destination: PageView(viewModel: .init(id: page.id))) {
                             Text(page.id)
                         }
                     }
                 }
-            }
-        }.alert(isPresented: .init(get: { viewModel.error != nil }, set: { _ in viewModel.error = nil })) {
+            }.listStyle(InsetGroupedListStyle())
+        }
+        .alert(isPresented: .init(get: { viewModel.error != nil }, set: { _ in viewModel.error = nil })) {
             Alert(
                 title: Text("Error"),
                 message: Text(viewModel.error?.localizedDescription ?? ""),

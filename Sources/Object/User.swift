@@ -56,7 +56,7 @@ public extension User {
 
 public extension User.TypeValue {
     struct Person: Decodable {
-        let email: String
+        public let email: String
     }
     struct Bot: Decodable {
     }

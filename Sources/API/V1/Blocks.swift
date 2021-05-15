@@ -18,8 +18,6 @@ extension V1.Blocks {
         
         public var path: String { "/v1/blocks/\(id)/children" }
         public let id: String
-//        public let startCursor: String
-//        public let pageSize: String
         public let method: HTTPMethod = .get
         public typealias Response = Object.List<Object.Block>
     }

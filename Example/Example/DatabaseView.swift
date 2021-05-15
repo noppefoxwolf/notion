@@ -10,21 +10,14 @@ import Combine
 import Object
 import API
 
-struct DBView: View {
+struct DatabaseView: View {
     @ObservedObject var viewModel: ViewModel
     
     var body: some View {
         List {
-            ForEach(viewModel.blocks) { block in
-                switch block.type {
-                case let .heading1(heading):
-                    Text(heading.text.first?.plainText ?? "")
-                case let .paragraph(paragraph):
-                    Text(paragraph.text.first?.plainText ?? "")
-                case .unsupported:
-                    Text("")
-                default:
-                    Text("block")
+            ForEach(viewModel.pages) { page in
+                NavigationLink(destination: PageView(viewModel: .init(id: page.id))) {
+                    Text(page.id)
                 }
             }
         }.navigationBarItems(trailing: Button(action: {
@@ -35,7 +28,7 @@ struct DBView: View {
         .navigationTitle(viewModel.database?.id ?? "Loading")
         .onAppear {
             viewModel.fetch()
-            viewModel.fetchBlocks()
+            viewModel.fetchPages()
         }.alert(isPresented: .init(get: { viewModel.error != nil }, set: { _ in viewModel.error = nil })) {
             Alert(
                 title: Text("Error"),
@@ -53,7 +46,7 @@ struct DBView: View {
     }
 }
 
-extension DBView {
+extension DatabaseView {
     class ViewModel: ObservableObject {
         internal init(id: Database.ID) {
             self.id = id
@@ -61,7 +54,7 @@ extension DBView {
         
         @Environment(\.notion) private var session
         @Published var database: Object.Database? = nil
-        @Published var blocks: [Object.Block] = []
+        @Published var pages: [Object.Page] = []
         @Published var error: Error? = nil
         @Published var isPresentedMenuSheet: Bool = false
         var cancellables: [AnyCancellable] = []
@@ -78,11 +71,11 @@ extension DBView {
             }.store(in: &cancellables)
         }
         
-        func fetchBlocks() {
-            session.send(V1.Blocks.Children(id: id)).sink { result in
+        func fetchPages() {
+            session.send(V1.Databases.Query(id: id)).sink { result in
                 switch result {
                 case let .success(response):
-                    self.blocks = response.results
+                    self.pages = response.results
                 case let .failure(error):
                     self.error = error
                 }
@@ -93,6 +86,8 @@ extension DBView {
             session.send(V1.Pages.Create(parent: .init(type: .databaseId(id)), properties: [:], children: [.init(type: .heading1(.init(text: [.init(type: .text(.init(content: "new page")))])))])).sink { result in
                 switch result {
                 case let .success(response):
+                    self.pages = []
+                    self.fetchPages()
                     break
                 case let .failure(error):
                     self.error = error

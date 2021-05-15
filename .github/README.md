@@ -29,6 +29,8 @@ dependencies: [
 # Usage
 
 ```swift
+import notion
+
 let session = Session.shared
 session.setAuthorization(token: "<<AUTHORIZE TOKEN>>")
 session.send(V1.Users.List()).sink { result in

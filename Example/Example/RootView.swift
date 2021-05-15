@@ -38,24 +38,14 @@ struct RootView: View {
                         }
                     }
                 }
-            }.navigationBarItems(trailing: Button(action: {
-                viewModel.isPresentedAddSheet = true
-            }, label: {
-                Image(systemName: "plus")
-            }))
+            }
         }.alert(isPresented: .init(get: { viewModel.error != nil }, set: { _ in viewModel.error = nil })) {
             Alert(
                 title: Text("Error"),
                 message: Text(viewModel.error?.localizedDescription ?? ""),
                 dismissButton: Alert.Button.cancel()
             )
-        }.actionSheet(isPresented: $viewModel.isPresentedAddSheet, content: {
-            ActionSheet(title: Text("menu"), buttons: [
-                .default(Text("Page"), action: {
-                    viewModel.createPage()
-                })
-            ])
-        }).onAppear {
+        }.onAppear {
             viewModel.fetchUsers()
             viewModel.fetchDatabases()
         }
@@ -69,7 +59,6 @@ extension RootView {
         @Published var databases: [Object.Database] = []
         @Published var pages: [Object.Page] = []
         @Published var error: Error? = nil
-        @Published var isPresentedAddSheet: Bool = false
         var cancellables: [AnyCancellable] = []
         
         func fetchUsers() {
@@ -105,10 +94,6 @@ extension RootView {
                     self.error = error
                 }
             }.store(in: &cancellables)
-        }
-        
-        func createPage() {
-            
         }
     }
 }

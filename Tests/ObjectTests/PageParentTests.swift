@@ -28,7 +28,7 @@ class PageParentTests: XCTestCase {
             "database_id" : "b8595b75-abd1-4cad-8dfe-f935a8ef57cb"
         }
         """
-        let parent = try! decoder.decode(PageParent.self, from: json.data(using: .utf8)!)
+        let parent = try! decoder.decode(Parent.self, from: json.data(using: .utf8)!)
         if case let .databaseId(id) = parent.type {
             XCTAssertEqual(id, "b8595b75-abd1-4cad-8dfe-f935a8ef57cb")
         } else { XCTAssert(false) }

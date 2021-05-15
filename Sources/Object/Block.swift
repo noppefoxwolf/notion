@@ -7,7 +7,16 @@
 
 import Foundation
 
-public struct Block: Decodable, Identifiable {
+public struct Block: Codable, Identifiable, Equatable {
+    public init(type: Block.TypeValue) {
+        self.object = "block"
+        self.id = UUID().uuidString
+        self.type = type
+        self.createdTime = Date()
+        self.lastEditedTime = Date()
+        self.hasChildren = false
+    }
+    
     public let object: String
     public let id: String
     public let type: TypeValue
@@ -49,7 +58,7 @@ extension Block {
         let type: InternalType = try container.decode(forKey: .init(.type))
         switch type {
         case .paragraph:
-            let value = try container.decode(TypeValue.Paragraph.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Paragraph.self, forKey: .init(stringValue: type.rawValue)!)
             self.type = .paragraph(value)
         case .heading1:
             let value = try container.decode(TypeValue.Heading1.self, forKey: .init(stringValue: "\(type)")!)
@@ -82,7 +91,7 @@ extension Block {
 }
 
 extension Block {
-    public enum TypeValue {
+    public enum TypeValue: Equatable {
         case paragraph(Paragraph)
         case heading1(Heading1)
         case heading2(Heading2)
@@ -97,39 +106,125 @@ extension Block {
 }
 
 extension Block.TypeValue {
-    public struct Paragraph: Decodable {
+    public struct Paragraph: Codable, Equatable {
+        public init(text: [RichText], children: [Block]?) {
+            self.text = text
+            self.children = children
+        }
+        
         public let text: [RichText]
         public let children: [Block]?
     }
-    public struct Heading1: Decodable {
+    public struct Heading1: Codable, Equatable {
+        public init(text: [RichText]) {
+            self.text = text
+        }
+        
         public let text: [RichText]
     }
-    public struct Heading2: Decodable {
+    public struct Heading2: Codable, Equatable {
+        public init(text: [RichText]) {
+            self.text = text
+        }
+        
         public let text: [RichText]
     }
-    public struct Heading3: Decodable {
+    public struct Heading3: Codable, Equatable {
+        public init(text: [RichText]) {
+            self.text = text
+        }
+        
         public let text: [RichText]
     }
-    public struct BulletedListItem: Decodable {
+    public struct BulletedListItem: Codable, Equatable {
+        public init(text: [RichText], children: [Block]?) {
+            self.text = text
+            self.children = children
+        }
+        
         public let text: [RichText]
         public let children: [Block]?
     }
-    public struct NumberedListItem: Decodable {
+    public struct NumberedListItem: Codable, Equatable {
+        public init(text: [RichText], children: [Block]?) {
+            self.text = text
+            self.children = children
+        }
+        
         public let text: [RichText]
         public let children: [Block]?
     }
-    public struct ToDo: Decodable {
+    public struct ToDo: Codable, Equatable {
+        public init(text: [RichText], checked: Bool, children: [Block]?) {
+            self.text = text
+            self.checked = checked
+            self.children = children
+        }
+        
         public let text: [RichText]
         public let checked: Bool
         public let children: [Block]?
     }
-    public struct Toggle: Decodable {
+    public struct Toggle: Codable, Equatable {
+        public init(text: [RichText], children: [Block]?) {
+            self.text = text
+            self.children = children
+        }
+        
         public let text: [RichText]
         public let children: [Block]?
     }
-    public struct ChildPage: Decodable {
+    public struct ChildPage: Codable, Equatable {
+        public init(title: String) {
+            self.title = title
+        }
+        
         public let title: String
     }
-    public struct Unsupported: Decodable {
+    public struct Unsupported: Codable, Equatable {
+        public init() {}
+    }
+}
+
+extension Block {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: TypedAnyCodingKey<CodingKey>.self)
+        try container.encode(object, forKey: .init(.object))
+        try container.encode(id, forKey: .init(.id))
+        try container.encode(createdTime, forKey: .init(.createdTime))
+        try container.encode(lastEditedTime, forKey: .init(.lastEditedTime))
+        try container.encode(hasChildren, forKey: .init(.hasChildren))
+        switch type {
+        case let .paragraph(paragraph):
+            try container.encode(InternalType.paragraph.rawValue, forKey: .init(.type))
+            try container.encode(paragraph, forKey: .init(stringValue: InternalType.paragraph.rawValue)!)
+        case let .heading1(heading1):
+            try container.encode(InternalType.heading1.rawValue, forKey: .init(.type))
+            try container.encode(heading1, forKey: .init(stringValue: InternalType.heading1.rawValue)!)
+        case let .heading2(heading2):
+            try container.encode(InternalType.heading2.rawValue, forKey: .init(.type))
+            try container.encode(heading2, forKey: .init(stringValue: InternalType.heading2.rawValue)!)
+        case let .heading3(heading3):
+            try container.encode(InternalType.heading3.rawValue, forKey: .init(.type))
+            try container.encode(heading3, forKey: .init(stringValue: InternalType.heading3.rawValue)!)
+        case let .bulletedListItem(bulletedListItem):
+            try container.encode(InternalType.bulletedListItem.rawValue, forKey: .init(.type))
+            try container.encode(bulletedListItem, forKey: .init(stringValue: InternalType.bulletedListItem.rawValue)!)
+        case let .numberedListItem(numberedListItem):
+            try container.encode(InternalType.numberedListItem.rawValue, forKey: .init(.type))
+            try container.encode(numberedListItem, forKey: .init(stringValue: InternalType.numberedListItem.rawValue)!)
+        case let .toDo(toDo):
+            try container.encode(InternalType.toDo.rawValue, forKey: .init(.type))
+            try container.encode(toDo, forKey: .init(stringValue: InternalType.toDo.rawValue)!)
+        case let .toggle(toggle):
+            try container.encode(InternalType.toggle.rawValue, forKey: .init(.type))
+            try container.encode(toggle, forKey: .init(stringValue: InternalType.toggle.rawValue)!)
+        case let .childPage(childPage):
+            try container.encode(InternalType.childPage.rawValue, forKey: .init(.type))
+            try container.encode(childPage, forKey: .init(stringValue: InternalType.childPage.rawValue)!)
+        case let .unsupported(unsupported):
+            try container.encode(InternalType.unsupported.rawValue, forKey: .init(.type))
+            try container.encode(unsupported, forKey: .init(stringValue: InternalType.unsupported.rawValue)!)
+        }
     }
 }

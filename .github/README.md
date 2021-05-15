@@ -60,7 +60,7 @@ session.send(V1.Users.List()).sink { result in
 ## page
 
 - [ ] Update page properties
-- [ ] Create a page
+- [x] Create a page
 - [x] Retrieve a page
 
 ## database

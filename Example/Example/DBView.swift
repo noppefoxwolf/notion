@@ -27,7 +27,11 @@ struct DBView: View {
                     Text("block")
                 }
             }
-        }
+        }.navigationBarItems(trailing: Button(action: {
+            viewModel.isPresentedMenuSheet = true
+        }, label: {
+            Image(systemName: "plus")
+        }))
         .navigationTitle(viewModel.database?.id ?? "Loading")
         .onAppear {
             viewModel.fetch()
@@ -38,7 +42,14 @@ struct DBView: View {
                 message: Text(viewModel.error?.localizedDescription ?? ""),
                 dismissButton: Alert.Button.cancel()
             )
-        }
+        }.actionSheet(isPresented: $viewModel.isPresentedMenuSheet, content: {
+            ActionSheet(title: Text("menu"), buttons: [
+                .default(Text("Page"), action: {
+                    viewModel.createPage()
+                }),
+                .cancel()
+            ])
+        })
     }
 }
 
@@ -52,6 +63,7 @@ extension DBView {
         @Published var database: Object.Database? = nil
         @Published var blocks: [Object.Block] = []
         @Published var error: Error? = nil
+        @Published var isPresentedMenuSheet: Bool = false
         var cancellables: [AnyCancellable] = []
         let id: Database.ID
         
@@ -76,8 +88,16 @@ extension DBView {
                 }
             }.store(in: &cancellables)
         }
+        
+        func createPage() {
+            session.send(V1.Pages.Create(parent: .init(type: .databaseId(id)), properties: [:], children: [.init(type: .heading1(.init(text: [.init(type: .text(.init(content: "new page")))])))])).sink { result in
+                switch result {
+                case let .success(response):
+                    break
+                case let .failure(error):
+                    self.error = error
+                }
+            }.store(in: &cancellables)
+        }
     }
 }
-
-
-

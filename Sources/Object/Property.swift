@@ -7,7 +7,12 @@
 
 import Foundation
 
-public struct Property: Decodable {
+public struct Property: Codable {
+    public init(type: Property.TypeValue) {
+        self.id = UUID().uuidString
+        self.type = type
+    }
+    
     public let id: String
     public let type: TypeValue
 }
@@ -131,24 +136,89 @@ public extension Property {
 }
 
 public extension Property.TypeValue {
-    struct Title: Decodable {}
-    struct RichText: Decodable {}
-    struct Number: Decodable {}
-    struct Select: Decodable {}
-    struct MultiSelect: Decodable {}
-    struct Date: Decodable {}
-    struct People: Decodable {}
-    struct File: Decodable {}
-    struct Checkbox: Decodable {}
-    struct Url: Decodable {}
-    struct Email: Decodable {}
-    struct PhoneNumber: Decodable {}
-    struct Formula: Decodable {}
-    struct Relation: Decodable {}
-    struct Rollup: Decodable {}
-    struct CreatedTime: Decodable {}
-    struct CreatedBy: Decodable {}
-    struct LastEditedTime: Decodable {}
-    struct LastEditedBy: Decodable {}
+    struct Title: Codable {}
+    struct RichText: Codable {}
+    struct Number: Codable {}
+    struct Select: Codable {}
+    struct MultiSelect: Codable {}
+    struct Date: Codable {}
+    struct People: Codable {}
+    struct File: Codable {}
+    struct Checkbox: Codable {}
+    struct Url: Codable {}
+    struct Email: Codable {}
+    struct PhoneNumber: Codable {}
+    struct Formula: Codable {}
+    struct Relation: Codable {}
+    struct Rollup: Codable {}
+    struct CreatedTime: Codable {}
+    struct CreatedBy: Codable {}
+    struct LastEditedTime: Codable {}
+    struct LastEditedBy: Codable {}
 }
 
+extension Property {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: TypedAnyCodingKey<CodingKey>.self)
+        try container.encode(id, forKey: .init(.id))
+        switch type {
+        case let .title(title):
+            try container.encode(InternalType.title.rawValue, forKey: .init(.type))
+            try container.encode(title, forKey: .init(stringValue: InternalType.title.rawValue)!)
+        case let .richText(richText):
+            try container.encode(InternalType.richText.rawValue, forKey: .init(.type))
+            try container.encode(richText, forKey: .init(stringValue: InternalType.richText.rawValue)!)
+        case let .number(number):
+            try container.encode(InternalType.number.rawValue, forKey: .init(.type))
+            try container.encode(number, forKey: .init(stringValue: InternalType.number.rawValue)!)
+        case let .select(select):
+            try container.encode(InternalType.select.rawValue, forKey: .init(.type))
+            try container.encode(select, forKey: .init(stringValue: InternalType.select.rawValue)!)
+        case let .multiSelect(multiSelect):
+            try container.encode(InternalType.multiSelect.rawValue, forKey: .init(.type))
+            try container.encode(multiSelect, forKey: .init(stringValue: InternalType.multiSelect.rawValue)!)
+        case let .date(date):
+            try container.encode(InternalType.date.rawValue, forKey: .init(.type))
+            try container.encode(date, forKey: .init(stringValue: InternalType.date.rawValue)!)
+        case let .people(people):
+            try container.encode(InternalType.people.rawValue, forKey: .init(.type))
+            try container.encode(people, forKey: .init(stringValue: InternalType.people.rawValue)!)
+        case let .file(file):
+            try container.encode(InternalType.file.rawValue, forKey: .init(.type))
+            try container.encode(file, forKey: .init(stringValue: InternalType.file.rawValue)!)
+        case let .checkbox(checkbox):
+            try container.encode(InternalType.checkbox.rawValue, forKey: .init(.type))
+            try container.encode(checkbox, forKey: .init(stringValue: InternalType.checkbox.rawValue)!)
+        case let .url(url):
+            try container.encode(InternalType.url.rawValue, forKey: .init(.type))
+            try container.encode(url, forKey: .init(stringValue: InternalType.url.rawValue)!)
+        case let .email(email):
+            try container.encode(InternalType.email.rawValue, forKey: .init(.type))
+            try container.encode(email, forKey: .init(stringValue: InternalType.email.rawValue)!)
+        case let .phoneNumber(phoneNumber):
+            try container.encode(InternalType.phoneNumber.rawValue, forKey: .init(.type))
+            try container.encode(phoneNumber, forKey: .init(stringValue: InternalType.phoneNumber.rawValue)!)
+        case let .formula(formula):
+            try container.encode(InternalType.formula.rawValue, forKey: .init(.type))
+            try container.encode(formula, forKey: .init(stringValue: InternalType.formula.rawValue)!)
+        case let .relation(relation):
+            try container.encode(InternalType.relation.rawValue, forKey: .init(.type))
+            try container.encode(relation, forKey: .init(stringValue: InternalType.relation.rawValue)!)
+        case let .rollup(rollup):
+            try container.encode(InternalType.rollup.rawValue, forKey: .init(.type))
+            try container.encode(rollup, forKey: .init(stringValue: InternalType.rollup.rawValue)!)
+        case let .createdTime(createdTime):
+            try container.encode(InternalType.createdTime.rawValue, forKey: .init(.type))
+            try container.encode(createdTime, forKey: .init(stringValue: InternalType.createdTime.rawValue)!)
+        case let .createdBy(createdBy):
+            try container.encode(InternalType.createdBy.rawValue, forKey: .init(.type))
+            try container.encode(createdBy, forKey: .init(stringValue: InternalType.createdBy.rawValue)!)
+        case let .lastEditedTime(lastEditedTime):
+            try container.encode(InternalType.lastEditedTime.rawValue, forKey: .init(.type))
+            try container.encode(lastEditedTime, forKey: .init(stringValue: InternalType.lastEditedTime.rawValue)!)
+        case let .lastEditedBy(lastEditedBy):
+            try container.encode(InternalType.lastEditedBy.rawValue, forKey: .init(.type))
+            try container.encode(lastEditedBy, forKey: .init(stringValue: InternalType.lastEditedBy.rawValue)!)
+        }
+    }
+}

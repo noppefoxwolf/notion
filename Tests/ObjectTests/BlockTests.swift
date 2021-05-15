@@ -6,12 +6,15 @@ import XCTest
 class BlockTests: XCTestCase {
 
     let decoder: JSONDecoder = JSONDecoder()
+    let encoder: JSONEncoder = JSONEncoder()
     
     override func setUp() {
         super.setUp()
         decoder.dateDecodingStrategy = .formatted(.iso8601Full)
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-     }
+        encoder.dateEncodingStrategy = .formatted(.iso8601Full)
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+    }
 
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
@@ -253,6 +256,47 @@ class BlockTests: XCTestCase {
                 XCTAssertEqual(text.content, "Works")
             } else { XCTAssert(false) }
         } else { XCTAssert(false) }
-        
+    }
+    
+    func testCodable() {
+        let json = """
+        {
+              "object": "block",
+              "id": "4d2c6ac1-f73b-4ca4-94a6-53e91034c74d",
+              "created_time": "2021-05-14T13:43:00.000Z",
+              "last_edited_time": "2021-05-14T13:43:00.000Z",
+              "has_children": false,
+              "type": "paragraph",
+              "paragraph": {
+                "text": [
+                  {
+                    "type": "text",
+                    "text": {
+                      "content": "hogw",
+                      "link": null
+                    },
+                    "annotations": {
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "code": false,
+                      "color": "default"
+                    },
+                    "plain_text": "hogw",
+                    "href": null
+                  }
+                ]
+              }
+            }
+        """
+        let block = try! decoder.decode(Block.self, from: json.data(using: .utf8)!)
+        if case let .paragraph(paragraph) = block.type {
+            XCTAssertEqual(paragraph.text[0].plainText, "hogw")
+        } else { XCTAssert(false) }
+        let data = try! encoder.encode(block)
+        print("JSON:: \(String(data: data, encoding: .utf8)!)")
+        let block2 = try! decoder.decode(Block.self, from: data)
+        XCTAssertEqual(block, block2)
     }
 }

@@ -44,8 +44,10 @@ public class Session {
             .catch({ (error) -> Just<Result<T.Response, NotionError>> in
                 switch error {
                 case let apiError as APIError:
+                    print(apiError)
                     return Just(.failure(NotionError.api(apiError)))
                 default:
+                    print(error)
                     return Just(.failure(NotionError.other(error)))
                 }
             })

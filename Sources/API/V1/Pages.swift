@@ -23,12 +23,24 @@ extension V1.Pages {
     }
     
     public struct Create: Request {
+        public init(parent: Parent, properties: [String : Property], children: [Block]) {
+            struct Parameter: Encodable {
+                let parent: Parent
+                let properties: [String : Property]
+                let children: [Block]
+            }
+            let parameter = Parameter(parent: parent, properties: properties, children: children)
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .formatted(.iso8601Full)
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            let data = try! encoder.encode(parameter)
+            httpBody = data
+        }
+        
         public var path: String { "/v1/pages" }
-        public let parent: String
-        public let properties: [String]
-        public let children: [String]
         public let method: HTTPMethod = .post
-        public typealias Response = Object.List<Object.User>
+        public let httpBody: Data?
+        public typealias Response = Object.Page
     }
     
     public struct Update: Request {

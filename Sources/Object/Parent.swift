@@ -8,6 +8,10 @@
 import Foundation
 
 public struct Parent: Codable {
+    public init(type: Parent.TypeValue) {
+        self.type = type
+    }
+    
     public let type: TypeValue
 }
 

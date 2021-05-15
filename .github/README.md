@@ -65,7 +65,7 @@ session.send(V1.Users.List()).sink { result in
 
 ## database
 
-~~List databases~~
+~~List databases~~ [deprecated](https://developers.notion.com/reference/get-databases)
 - [x] Query a database
 - [x] Retrieve a database
  

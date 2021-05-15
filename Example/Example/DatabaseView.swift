@@ -7,8 +7,7 @@
 
 import SwiftUI
 import Combine
-import Object
-import API
+import notion
 
 struct DatabaseView: View {
     @ObservedObject var viewModel: ViewModel

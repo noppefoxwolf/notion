@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import API
+import notion
 
 @main
 struct App: SwiftUI.App {
@@ -14,7 +14,7 @@ struct App: SwiftUI.App {
         WindowGroup {
             RootView(viewModel: .init()).environment(\.notion, {
                 let session = Session.shared
-                session.setAuthorization(token: "")
+                session.setAuthorization(token: "secret_LDF1jpWlRgbQv4gQEmH2bH6YhrlE7al84E0R4xkBDtr")
                 return session
             }())
         }

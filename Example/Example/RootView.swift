@@ -7,8 +7,6 @@
 
 import SwiftUI
 import notion
-import API
-import Object
 import Combine
 
 struct RootView: View {

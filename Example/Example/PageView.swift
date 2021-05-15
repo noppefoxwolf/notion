@@ -38,8 +38,11 @@ struct PageView: View {
         }
         .actionSheet(isPresented: $viewModel.isPresentedMenuSheet, content: {
             ActionSheet(title: Text("menu"), buttons: [
-                .default(Text("Block"), action: {
+                .default(Text("Add Block"), action: {
                     viewModel.createBlock()
+                }),
+                .default(Text("Update Property"), action: {
+                    viewModel.updateProperty()
                 }),
                 .cancel()
             ])
@@ -118,6 +121,19 @@ extension PageView {
                 case let .success(response):
                     self.blocks = []
                     self.fetchBlocks()
+                case let .failure(error):
+                    self.error = error
+                }
+            }.store(in: &cancellables)
+        }
+        
+        func updateProperty() {
+            session.send(V1.Pages.Update(id: id, properties: ["title" : .init(type: .title([.init(type: .text(.init(content: "Updated name")))]))])).sink { result in
+                switch result {
+                case let .success(response):
+                    self.page = nil
+                    self.fetch()
+                    break
                 case let .failure(error):
                     self.error = error
                 }

@@ -41,7 +41,7 @@ session.send(V1.Users.List()).sink { result in
 ## integration
 
 - [x] internal integration
-- [ ] public integration
+- [x] public integration
 
 ## user
 

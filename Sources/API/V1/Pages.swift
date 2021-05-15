@@ -44,11 +44,24 @@ extension V1.Pages {
     }
     
     public struct Update: Request {
-        public var path: String { "/v1/pages" }
-        public let parent: String
-        public let properties: [String]
-        public let children: [String]
+        public init(id: Object.Page.ID, properties: [String : Property]) {
+            self.id = id
+            
+            struct Parameter: Encodable {
+                let properties: [String : Property]
+            }
+            let parameter = Parameter(properties: properties)
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .formatted(.iso8601Full)
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            let data = try! encoder.encode(parameter)
+            httpBody = data
+        }
+        
+        public var path: String { "/v1/pages/\(id)" }
+        public let id: String
+        public let httpBody: Data?
         public let method: HTTPMethod = .patch
-        public typealias Response = Object.List<Object.User>
+        public typealias Response = Object.Page
     }
 }

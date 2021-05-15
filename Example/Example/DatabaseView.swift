@@ -37,7 +37,7 @@ struct DatabaseView: View {
             )
         }.actionSheet(isPresented: $viewModel.isPresentedMenuSheet, content: {
             ActionSheet(title: Text("menu"), buttons: [
-                .default(Text("Page"), action: {
+                .default(Text("Add Page"), action: {
                     viewModel.createPage()
                 }),
                 .cancel()

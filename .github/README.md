@@ -22,7 +22,7 @@ Append following line to Package.swift.
 
 ```
 dependencies: [
-    .package(url: "https://github.com/noppefoxwolf/notion", from: "0.0.1")
+    .package(url: "https://github.com/noppefoxwolf/notion", from: "0.1.0")
 }
 ```
 

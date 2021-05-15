@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 
 public class Session {
     public static let shared: Session = Session(session: .shared)
@@ -22,13 +21,21 @@ public class Session {
         self.authorizationToken = token
     }
     
-    public func send<T: Request>(_ api: T) -> AnyPublisher<Result<T.Response, NotionError>, Never> {
+    public func send<T: Request>(_ api: T, completions: @escaping (Result<T.Response, NotionError>) -> Void) {
         let request = api.makeURLRequest(authorizationToken: authorizationToken)
-        return session.dataTaskPublisher(for: request)
-            .tryMap({ (data, response) in
+        session.dataTask(with: request) { data, response, error in
+            do {
                 let decoder = JSONDecoder()
                 decoder.dateDecodingStrategy = .formatted(.iso8601Full)
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
+                
+                if let error = error {
+                    throw error
+                }
+                
+                guard let data = data else {
+                    throw InternalError.unknown
+                }
                 
                 guard let httpURLResponse = response as? HTTPURLResponse else {
                     throw InternalError.unknown
@@ -38,20 +45,40 @@ public class Session {
                     throw (error ?? InternalError.unknown)
                 }
                 
-                return try decoder.decode(T.Response.self, from: data)
-            })
-            .map(Result.success)
-            .catch({ (error) -> Just<Result<T.Response, NotionError>> in
+                completions(.success(try decoder.decode(T.Response.self, from: data)))
+            } catch {
                 switch error {
                 case let apiError as APIError:
-                    print(apiError)
-                    return Just(.failure(NotionError.api(apiError)))
+                    completions(.failure(NotionError.api(apiError)))
                 default:
-                    print(error)
-                    return Just(.failure(NotionError.other(error)))
+                    completions(.failure(NotionError.other(error)))
                 }
-            })
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
+            }
+        }.resume()
     }
 }
+
+#if canImport(Combine)
+import Combine
+
+extension Session {
+    @available(watchOS 6.0, *)
+    @available(tvOS 13.0, *)
+    @available(macOS 10.15, *)
+    @available(iOS 13.0, *)
+    public func send<T: Request>(_ api: T) -> AnyPublisher<Result<T.Response, NotionError>, Never> {
+        Deferred {
+            Future { promise in
+                self.send(api) { result in
+                    switch result {
+                    case let .success(response):
+                        promise(.success(.success(response)))
+                    case let .failure(error):
+                        promise(.success(.failure(error)))
+                    }
+                }
+            }
+        }.receive(on: DispatchQueue.main).eraseToAnyPublisher()
+    }
+}
+#endif

@@ -58,31 +58,31 @@ extension Block {
         let type: InternalType = try container.decode(forKey: .init(.type))
         switch type {
         case .paragraph:
-            let value = try container.decode(TypeValue.Paragraph.self, forKey: .init(stringValue: type.rawValue)!)
+            let value = try container.decode(TypeValue.Paragraph.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .paragraph(value)
         case .heading1:
-            let value = try container.decode(TypeValue.Heading1.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Heading1.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .heading1(value)
         case .heading2:
-            let value = try container.decode(TypeValue.Heading2.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Heading2.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .heading2(value)
         case .heading3:
-            let value = try container.decode(TypeValue.Heading3.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Heading3.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .heading3(value)
         case .bulletedListItem:
-            let value = try container.decode(TypeValue.BulletedListItem.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.BulletedListItem.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .bulletedListItem(value)
         case .numberedListItem:
-            let value = try container.decode(TypeValue.NumberedListItem.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.NumberedListItem.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .numberedListItem(value)
         case .toDo:
-            let value = try container.decode(TypeValue.ToDo.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.ToDo.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .toDo(value)
         case .toggle:
-            let value = try container.decode(TypeValue.Toggle.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Toggle.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .toggle(value)
         case .childPage:
-            let value = try container.decode(TypeValue.ChildPage.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.ChildPage.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .childPage(value)
         case .unsupported:
             self.type = .unsupported(.init())

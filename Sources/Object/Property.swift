@@ -23,7 +23,7 @@ extension Property {
         case type
     }
     
-    enum InternalType: String, Decodable {
+    enum InternalType: String, Swift.CodingKey, Decodable {
         case title = "title"
         case richText = "rich_text"
         case number = "number"
@@ -47,66 +47,77 @@ extension Property {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: TypedAnyCodingKey<CodingKey>.self)
+        let subContainer = try decoder.container(keyedBy: TypedAnyCodingKey<InternalType>.self)
         id = try container.decode(forKey: .init(.id))
-        let type = try container.decode(InternalType.self, forKey: .init(.type))
+        let type = try? container.decode(InternalType.self, forKey: .init(.type))
         switch type {
         case .title:
-            let value = try container.decode(TypeValue.Title.self, forKey: .init(stringValue: "\(type)")!)
-            self.type = .title(value)
+            // workaround: キーのみが存在して中身がないケースがある
+            // ex: title: {} or title: [{a},{b},{c}]
+            do {
+                let value = try container.decode(TypeValue.Title.self, forKey: .init(stringValue: InternalType.title.rawValue.camelized())!)
+                self.type = .title(value)
+            } catch DecodingError.typeMismatch {
+                self.type = .title([])
+            } catch {
+                throw error
+            }
         case .richText:
-            let value = try container.decode(TypeValue.RichText.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try subContainer.decode(TypeValue.RichText.self, forKey: .init(stringValue: InternalType.richText.rawValue.camelized())!)
             self.type = .richText(value)
         case .number:
-            let value = try container.decode(TypeValue.Number.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Number.self, forKey: .init(stringValue: InternalType.number.rawValue.camelized())!)
             self.type = .number(value)
         case .select:
-            let value = try container.decode(TypeValue.Select.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Select.self, forKey: .init(stringValue: InternalType.select.rawValue.camelized())!)
             self.type = .select(value)
         case .multiSelect:
-            let value = try container.decode(TypeValue.MultiSelect.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.MultiSelect.self, forKey: .init(stringValue: InternalType.multiSelect.rawValue.camelized())!)
             self.type = .multiSelect(value)
         case .date:
-            let value = try container.decode(TypeValue.Date.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Date.self, forKey: .init(stringValue: InternalType.date.rawValue.camelized())!)
             self.type = .date(value)
         case .people:
-            let value = try container.decode(TypeValue.People.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.People.self, forKey: .init(stringValue: InternalType.people.rawValue.camelized())!)
             self.type = .people(value)
         case .file:
-            let value = try container.decode(TypeValue.File.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.File.self, forKey: .init(stringValue: InternalType.file.rawValue.camelized())!)
             self.type = .file(value)
         case .checkbox:
-            let value = try container.decode(TypeValue.Checkbox.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Checkbox.self, forKey: .init(stringValue: InternalType.checkbox.rawValue.camelized())!)
             self.type = .checkbox(value)
         case .url:
-            let value = try container.decode(TypeValue.Url.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Url.self, forKey: .init(stringValue: InternalType.url.rawValue.camelized())!)
             self.type = .url(value)
         case .email:
-            let value = try container.decode(TypeValue.Email.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Email.self, forKey: .init(stringValue: InternalType.email.rawValue.camelized())!)
             self.type = .email(value)
         case .phoneNumber:
-            let value = try container.decode(TypeValue.PhoneNumber.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.PhoneNumber.self, forKey: .init(stringValue: InternalType.phoneNumber.rawValue.camelized())!)
             self.type = .phoneNumber(value)
         case .formula:
-            let value = try container.decode(TypeValue.Formula.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Formula.self, forKey: .init(stringValue: InternalType.formula.rawValue.camelized())!)
             self.type = .formula(value)
         case .relation:
-            let value = try container.decode(TypeValue.Relation.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Relation.self, forKey: .init(stringValue: InternalType.relation.rawValue.camelized())!)
             self.type = .relation(value)
         case .rollup:
-            let value = try container.decode(TypeValue.Rollup.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Rollup.self, forKey: .init(stringValue: InternalType.rollup.rawValue.camelized())!)
             self.type = .rollup(value)
         case .createdTime:
-            let value = try container.decode(TypeValue.CreatedTime.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.CreatedTime.self, forKey: .init(stringValue: InternalType.createdTime.rawValue.camelized())!)
             self.type = .createdTime(value)
         case .createdBy:
-            let value = try container.decode(TypeValue.CreatedBy.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.CreatedBy.self, forKey: .init(stringValue: InternalType.createdBy.rawValue.camelized())!)
             self.type = .createdBy(value)
         case .lastEditedTime:
-            let value = try container.decode(TypeValue.LastEditedTime.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.LastEditedTime.self, forKey: .init(stringValue: InternalType.lastEditedTime.rawValue.camelized())!)
             self.type = .lastEditedTime(value)
         case .lastEditedBy:
-            let value = try container.decode(TypeValue.LastEditedBy.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.LastEditedBy.self, forKey: .init(stringValue: InternalType.lastEditedBy.rawValue.camelized())!)
             self.type = .lastEditedBy(value)
+        default:
+            self.type = .custom
         }
     }
 }
@@ -132,29 +143,31 @@ public extension Property {
         case createdBy(CreatedBy)
         case lastEditedTime(LastEditedTime)
         case lastEditedBy(LastEditedBy)
+        
+        case custom
     }
 }
 
-public extension Property.TypeValue {
-    struct Title: Codable {}
-    struct RichText: Codable {}
-    struct Number: Codable {}
-    struct Select: Codable {}
-    struct MultiSelect: Codable {}
-    struct Date: Codable {}
-    struct People: Codable {}
-    struct File: Codable {}
-    struct Checkbox: Codable {}
-    struct Url: Codable {}
-    struct Email: Codable {}
-    struct PhoneNumber: Codable {}
-    struct Formula: Codable {}
-    struct Relation: Codable {}
-    struct Rollup: Codable {}
-    struct CreatedTime: Codable {}
-    struct CreatedBy: Codable {}
-    struct LastEditedTime: Codable {}
-    struct LastEditedBy: Codable {}
+extension Property.TypeValue {
+    public typealias Title = [Object.RichText]
+    public struct RichText: Codable {}
+    public struct Number: Codable {}
+    public struct Select: Codable {}
+    public struct MultiSelect: Codable {}
+    public struct Date: Codable {}
+    public struct People: Codable {}
+    public struct File: Codable {}
+    public struct Checkbox: Codable {}
+    public struct Url: Codable {}
+    public struct Email: Codable {}
+    public struct PhoneNumber: Codable {}
+    public struct Formula: Codable {}
+    public struct Relation: Codable {}
+    public struct Rollup: Codable {}
+    public struct CreatedTime: Codable {}
+    public struct CreatedBy: Codable {}
+    public struct LastEditedTime: Codable {}
+    public struct LastEditedBy: Codable {}
 }
 
 extension Property {
@@ -219,6 +232,8 @@ extension Property {
         case let .lastEditedBy(lastEditedBy):
             try container.encode(InternalType.lastEditedBy.rawValue, forKey: .init(.type))
             try container.encode(lastEditedBy, forKey: .init(stringValue: InternalType.lastEditedBy.rawValue)!)
+        case .custom:
+            break
         }
     }
 }

@@ -38,10 +38,10 @@ extension User {
         let type = try container.decode(InternalType.self, forKey: .init(.type))
         switch type {
         case .person:
-            let value = try container.decode(TypeValue.Person.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Person.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .person(value)
         case .bot:
-            let value = try container.decode(TypeValue.Bot.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Bot.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .bot(value)
         }
     }

@@ -34,7 +34,7 @@ struct RootView: View {
                 Section(header: Text("Pages")) {
                     ForEach(viewModel.pages) { (page) in
                         NavigationLink(destination: PageView(viewModel: .init(id: page.id))) {
-                            Text(page.id)
+                            Text(page.retrieveTitle() ?? page.id)
                         }
                     }
                 }

@@ -31,10 +31,10 @@ extension Parent {
         let type = try container.decode(InternalType.self, forKey: .init(.type))
         switch type {
         case .databaseId:
-            let value = try container.decode(String.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(String.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .databaseId(value)
         case .pageId:
-            let value = try container.decode(String.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(String.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .pageId(value)
         case .workspace:
             self.type = .workspace

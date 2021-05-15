@@ -43,13 +43,13 @@ extension RichText {
         let type = try container.decode(InternalType.self, forKey: .init(.type))
         switch type {
         case .text:
-            let value = try container.decode(TypeValue.Text.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Text.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .text(value)
         case .mention:
-            let value = try container.decode(TypeValue.Mention.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Mention.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .mention(value)
         case .equation:
-            let value = try container.decode(TypeValue.Equation.self, forKey: .init(stringValue: "\(type)")!)
+            let value = try container.decode(TypeValue.Equation.self, forKey: .init(stringValue: type.rawValue.camelized())!)
             self.type = .equation(value)
         }
     }

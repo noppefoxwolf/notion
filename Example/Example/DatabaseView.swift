@@ -17,7 +17,7 @@ struct DatabaseView: View {
         List {
             ForEach(viewModel.pages) { page in
                 NavigationLink(destination: PageView(viewModel: .init(id: page.id))) {
-                    Text(page.id)
+                    Text(page.retrieveTitle() ?? page.id)
                 }
             }
         }.navigationBarItems(trailing: Button(action: {
@@ -25,7 +25,7 @@ struct DatabaseView: View {
         }, label: {
             Image(systemName: "plus")
         }))
-        .navigationTitle(viewModel.database?.id ?? "Loading")
+        .navigationTitle(viewModel.database?.title.first?.plainText ?? "Loading")
         .onAppear {
             viewModel.fetch()
             viewModel.fetchPages()

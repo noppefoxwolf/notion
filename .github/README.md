@@ -41,7 +41,7 @@ session.send(V1.Users.List()).sink { result in
 ## integration
 
 - [x] internal integration
-- [x] public integration
+- [ ] public integration
 
 ## user
 
@@ -59,7 +59,7 @@ session.send(V1.Users.List()).sink { result in
 
 ## page
 
-- [ ] Update page properties
+- [x] Update page properties
 - [x] Create a page
 - [x] Retrieve a page
 

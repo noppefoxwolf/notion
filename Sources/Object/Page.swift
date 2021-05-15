@@ -18,6 +18,7 @@ public struct Page: Decodable, Identifiable {
 }
 
 extension Page {
+    // convenience
     public func retrieveTitle() -> String? {
         let title: String?? = properties.first(where: { $0.value.id == "title" }).map({ $0.value }).map { (property) in
             switch property.type {

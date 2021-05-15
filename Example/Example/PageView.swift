@@ -20,16 +20,30 @@ struct PageView: View {
             }
         }
         .navigationTitle(viewModel.page?.retrieveTitle() ?? "Loading")
+        .navigationBarItems(trailing: Button(action: {
+            viewModel.isPresentedMenuSheet = true
+        }, label: {
+            Image(systemName: "plus")
+        }))
         .onAppear {
             viewModel.fetch()
-            viewModel.fetchBlock()
-        }.alert(isPresented: .init(get: { viewModel.error != nil }, set: { _ in viewModel.error = nil })) {
+            viewModel.fetchBlocks()
+        }
+        .alert(isPresented: .init(get: { viewModel.error != nil }, set: { _ in viewModel.error = nil })) {
             Alert(
                 title: Text("Error"),
                 message: Text(viewModel.error?.localizedDescription ?? ""),
                 dismissButton: Alert.Button.cancel()
             )
         }
+        .actionSheet(isPresented: $viewModel.isPresentedMenuSheet, content: {
+            ActionSheet(title: Text("menu"), buttons: [
+                .default(Text("Block"), action: {
+                    viewModel.createBlock()
+                }),
+                .cancel()
+            ])
+        })
     }
     
     @ViewBuilder
@@ -70,6 +84,8 @@ extension PageView {
         @Published var blocks: [Object.Block] = []
         @Published var error: Error? = nil
         var cancellables: [AnyCancellable] = []
+        @Published var isPresentedMenuSheet: Bool = false
+        
         let id: Page.ID
         
         func fetch() {
@@ -84,11 +100,24 @@ extension PageView {
             }.store(in: &cancellables)
         }
         
-        func fetchBlock() {
+        func fetchBlocks() {
             session.send(V1.Blocks.Children(id: id)).sink { result in
                 switch result {
                 case let .success(response):
                     self.blocks = response.results
+                case let .failure(error):
+                    self.error = error
+                }
+            }.store(in: &cancellables)
+        }
+        
+        func createBlock() {
+            let block: Block = .init(type: .heading1(.init(text: [.init(type: .text(.init(content: "append line")))])))
+            session.send(V1.Blocks.Append(id: id, children: [block])).sink { result in
+                switch result {
+                case let .success(response):
+                    self.blocks = []
+                    self.fetchBlocks()
                 case let .failure(error):
                     self.error = error
                 }

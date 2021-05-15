@@ -55,7 +55,7 @@ session.send(V1.Users.List()).sink { result in
 ## block
   
 - [x] Retrieve block children
-- [ ] Append block children
+- [x] Append block children
 
 ## page
 

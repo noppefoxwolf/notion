@@ -23,10 +23,23 @@ extension V1.Blocks {
     }
     
     public struct Append: Request {
+        public init(id: Block.ID, children: [Block]) {
+            self.id = id
+            struct Parameter: Encodable {
+                let children: [Block]
+            }
+            let parameter = Parameter(children: children)
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .formatted(.iso8601Full)
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            let data = try! encoder.encode(parameter)
+            httpBody = data
+        }
+        
         public var path: String { "/v1/blocks/\(id)/children" }
         public let id: String
-        public let children: String
         public let method: HTTPMethod = .patch
-        public typealias Response = Object.List<Object.User>
+        public let httpBody: Data?
+        public typealias Response = Object.Block
     }
 }

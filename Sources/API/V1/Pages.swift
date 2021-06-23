@@ -23,13 +23,12 @@ extension V1.Pages {
     }
     
     public struct Create: Request {
-        public init(parent: Parent, properties: [String : Property], children: [Block]) {
-            struct Parameter: Encodable {
-                let parent: Parent
-                let properties: [String : Property]
-                let children: [Block]
-            }
-            let parameter = Parameter(parent: parent, properties: properties, children: children)
+        public struct Parameter: Encodable {
+            let parent: Parent
+            let properties: [String : Property.TypeValue]
+            let children: [Block]
+        }
+        public init(parameter: Parameter) {
             let encoder = JSONEncoder()
             encoder.dateEncodingStrategy = .formatted(.iso8601Full)
             encoder.keyEncodingStrategy = .convertToSnakeCase

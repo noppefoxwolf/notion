@@ -23,7 +23,7 @@ extension Property {
         case type
     }
     
-    enum InternalType: String, Swift.CodingKey, Decodable {
+    public enum InternalType: String, Swift.CodingKey, Decodable {
         case title = "title"
         case richText = "rich_text"
         case number = "number"

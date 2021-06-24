@@ -13,6 +13,11 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: fwal/setup-swift@v1
+        with:
+          swift-version: "5.4.2"
+      - name: Get swift version
+        run: swift --version # Swift 5.3.3
       - name: Run tests
         run: |
           swift test

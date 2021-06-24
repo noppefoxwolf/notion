@@ -83,7 +83,7 @@ extension V1.Pages.Create.Parameter: Encodable {
         try container.encode(parent, forKey: .parent)
         try container.encode(children, forKey: .children)
 
-        var propertiesContainer = container.nestedContainer(keyedBy: Property.InternalType.self, forKey: .properties)
+        var propertiesContainer = container.nestedContainer(keyedBy: Property.PropertyType.self, forKey: .properties)
         try properties.forEach { key, value in
             switch value {
             case let .title(value):

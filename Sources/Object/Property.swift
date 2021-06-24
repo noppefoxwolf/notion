@@ -23,7 +23,7 @@ extension Property {
         case type
     }
     
-    public enum InternalType: String, Swift.CodingKey, Decodable {
+    public enum PropertyType: String, Swift.CodingKey, Decodable {
         case title = "title"
         case richText = "rich_text"
         case number = "number"
@@ -47,15 +47,15 @@ extension Property {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: TypedAnyCodingKey<CodingKey>.self)
-        let subContainer = try decoder.container(keyedBy: TypedAnyCodingKey<InternalType>.self)
+        let subContainer = try decoder.container(keyedBy: TypedAnyCodingKey<PropertyType>.self)
         id = try container.decode(forKey: .init(.id))
-        let type = try? container.decode(InternalType.self, forKey: .init(.type))
+        let type = try? container.decode(PropertyType.self, forKey: .init(.type))
         switch type {
         case .title:
             // workaround: キーのみが存在して中身がないケースがある
             // ex: title: {} or title: [{a},{b},{c}]
             do {
-                let value = try container.decode(TypeValue.Title.self, forKey: .init(stringValue: InternalType.title.rawValue.camelized())!)
+                let value = try container.decode(TypeValue.Title.self, forKey: .init(stringValue: PropertyType.title.rawValue.camelized())!)
                 self.type = .title(value)
             } catch DecodingError.typeMismatch {
                 self.type = .title([])
@@ -63,58 +63,58 @@ extension Property {
                 throw error
             }
         case .richText:
-            let value = try subContainer.decode(TypeValue.RichText.self, forKey: .init(stringValue: InternalType.richText.rawValue.camelized())!)
+            let value = try subContainer.decode(TypeValue.RichText.self, forKey: .init(stringValue: PropertyType.richText.rawValue.camelized())!)
             self.type = .richText(value)
         case .number:
-            let value = try container.decode(TypeValue.Number.self, forKey: .init(stringValue: InternalType.number.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.Number.self, forKey: .init(stringValue: PropertyType.number.rawValue.camelized())!)
             self.type = .number(value)
         case .select:
-            let value = try container.decode(TypeValue.Select.self, forKey: .init(stringValue: InternalType.select.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.Select.self, forKey: .init(stringValue: PropertyType.select.rawValue.camelized())!)
             self.type = .select(value)
         case .multiSelect:
-            let value = try container.decode(TypeValue.MultiSelect.self, forKey: .init(stringValue: InternalType.multiSelect.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.MultiSelect.self, forKey: .init(stringValue: PropertyType.multiSelect.rawValue.camelized())!)
             self.type = .multiSelect(value)
         case .date:
-            let value = try container.decode(TypeValue.Date.self, forKey: .init(stringValue: InternalType.date.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.Date.self, forKey: .init(stringValue: PropertyType.date.rawValue.camelized())!)
             self.type = .date(value)
         case .people:
-            let value = try container.decode(TypeValue.People.self, forKey: .init(stringValue: InternalType.people.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.People.self, forKey: .init(stringValue: PropertyType.people.rawValue.camelized())!)
             self.type = .people(value)
         case .file:
-            let value = try container.decode(TypeValue.File.self, forKey: .init(stringValue: InternalType.file.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.File.self, forKey: .init(stringValue: PropertyType.file.rawValue.camelized())!)
             self.type = .file(value)
         case .checkbox:
-            let value = try container.decode(TypeValue.Checkbox.self, forKey: .init(stringValue: InternalType.checkbox.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.Checkbox.self, forKey: .init(stringValue: PropertyType.checkbox.rawValue.camelized())!)
             self.type = .checkbox(value)
         case .url:
-            let value = try container.decode(TypeValue.Url.self, forKey: .init(stringValue: InternalType.url.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.Url.self, forKey: .init(stringValue: PropertyType.url.rawValue.camelized())!)
             self.type = .url(value)
         case .email:
-            let value = try container.decode(TypeValue.Email.self, forKey: .init(stringValue: InternalType.email.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.Email.self, forKey: .init(stringValue: PropertyType.email.rawValue.camelized())!)
             self.type = .email(value)
         case .phoneNumber:
-            let value = try container.decode(TypeValue.PhoneNumber.self, forKey: .init(stringValue: InternalType.phoneNumber.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.PhoneNumber.self, forKey: .init(stringValue: PropertyType.phoneNumber.rawValue.camelized())!)
             self.type = .phoneNumber(value)
         case .formula:
-            let value = try container.decode(TypeValue.Formula.self, forKey: .init(stringValue: InternalType.formula.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.Formula.self, forKey: .init(stringValue: PropertyType.formula.rawValue.camelized())!)
             self.type = .formula(value)
         case .relation:
-            let value = try container.decode(TypeValue.Relation.self, forKey: .init(stringValue: InternalType.relation.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.Relation.self, forKey: .init(stringValue: PropertyType.relation.rawValue.camelized())!)
             self.type = .relation(value)
         case .rollup:
-            let value = try container.decode(TypeValue.Rollup.self, forKey: .init(stringValue: InternalType.rollup.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.Rollup.self, forKey: .init(stringValue: PropertyType.rollup.rawValue.camelized())!)
             self.type = .rollup(value)
         case .createdTime:
-            let value = try container.decode(TypeValue.CreatedTime.self, forKey: .init(stringValue: InternalType.createdTime.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.CreatedTime.self, forKey: .init(stringValue: PropertyType.createdTime.rawValue.camelized())!)
             self.type = .createdTime(value)
         case .createdBy:
-            let value = try container.decode(TypeValue.CreatedBy.self, forKey: .init(stringValue: InternalType.createdBy.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.CreatedBy.self, forKey: .init(stringValue: PropertyType.createdBy.rawValue.camelized())!)
             self.type = .createdBy(value)
         case .lastEditedTime:
-            let value = try container.decode(TypeValue.LastEditedTime.self, forKey: .init(stringValue: InternalType.lastEditedTime.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.LastEditedTime.self, forKey: .init(stringValue: PropertyType.lastEditedTime.rawValue.camelized())!)
             self.type = .lastEditedTime(value)
         case .lastEditedBy:
-            let value = try container.decode(TypeValue.LastEditedBy.self, forKey: .init(stringValue: InternalType.lastEditedBy.rawValue.camelized())!)
+            let value = try container.decode(TypeValue.LastEditedBy.self, forKey: .init(stringValue: PropertyType.lastEditedBy.rawValue.camelized())!)
             self.type = .lastEditedBy(value)
         default:
             self.type = .custom
@@ -176,62 +176,62 @@ extension Property {
         try container.encode(id, forKey: .init(.id))
         switch type {
         case let .title(title):
-            try container.encode(InternalType.title.rawValue, forKey: .init(.type))
-            try container.encode(title, forKey: .init(stringValue: InternalType.title.rawValue)!)
+            try container.encode(PropertyType.title.rawValue, forKey: .init(.type))
+            try container.encode(title, forKey: .init(stringValue: PropertyType.title.rawValue)!)
         case let .richText(richText):
-            try container.encode(InternalType.richText.rawValue, forKey: .init(.type))
-            try container.encode(richText, forKey: .init(stringValue: InternalType.richText.rawValue)!)
+            try container.encode(PropertyType.richText.rawValue, forKey: .init(.type))
+            try container.encode(richText, forKey: .init(stringValue: PropertyType.richText.rawValue)!)
         case let .number(number):
-            try container.encode(InternalType.number.rawValue, forKey: .init(.type))
-            try container.encode(number, forKey: .init(stringValue: InternalType.number.rawValue)!)
+            try container.encode(PropertyType.number.rawValue, forKey: .init(.type))
+            try container.encode(number, forKey: .init(stringValue: PropertyType.number.rawValue)!)
         case let .select(select):
-            try container.encode(InternalType.select.rawValue, forKey: .init(.type))
-            try container.encode(select, forKey: .init(stringValue: InternalType.select.rawValue)!)
+            try container.encode(PropertyType.select.rawValue, forKey: .init(.type))
+            try container.encode(select, forKey: .init(stringValue: PropertyType.select.rawValue)!)
         case let .multiSelect(multiSelect):
-            try container.encode(InternalType.multiSelect.rawValue, forKey: .init(.type))
-            try container.encode(multiSelect, forKey: .init(stringValue: InternalType.multiSelect.rawValue)!)
+            try container.encode(PropertyType.multiSelect.rawValue, forKey: .init(.type))
+            try container.encode(multiSelect, forKey: .init(stringValue: PropertyType.multiSelect.rawValue)!)
         case let .date(date):
-            try container.encode(InternalType.date.rawValue, forKey: .init(.type))
-            try container.encode(date, forKey: .init(stringValue: InternalType.date.rawValue)!)
+            try container.encode(PropertyType.date.rawValue, forKey: .init(.type))
+            try container.encode(date, forKey: .init(stringValue: PropertyType.date.rawValue)!)
         case let .people(people):
-            try container.encode(InternalType.people.rawValue, forKey: .init(.type))
-            try container.encode(people, forKey: .init(stringValue: InternalType.people.rawValue)!)
+            try container.encode(PropertyType.people.rawValue, forKey: .init(.type))
+            try container.encode(people, forKey: .init(stringValue: PropertyType.people.rawValue)!)
         case let .file(file):
-            try container.encode(InternalType.file.rawValue, forKey: .init(.type))
-            try container.encode(file, forKey: .init(stringValue: InternalType.file.rawValue)!)
+            try container.encode(PropertyType.file.rawValue, forKey: .init(.type))
+            try container.encode(file, forKey: .init(stringValue: PropertyType.file.rawValue)!)
         case let .checkbox(checkbox):
-            try container.encode(InternalType.checkbox.rawValue, forKey: .init(.type))
-            try container.encode(checkbox, forKey: .init(stringValue: InternalType.checkbox.rawValue)!)
+            try container.encode(PropertyType.checkbox.rawValue, forKey: .init(.type))
+            try container.encode(checkbox, forKey: .init(stringValue: PropertyType.checkbox.rawValue)!)
         case let .url(url):
-            try container.encode(InternalType.url.rawValue, forKey: .init(.type))
-            try container.encode(url, forKey: .init(stringValue: InternalType.url.rawValue)!)
+            try container.encode(PropertyType.url.rawValue, forKey: .init(.type))
+            try container.encode(url, forKey: .init(stringValue: PropertyType.url.rawValue)!)
         case let .email(email):
-            try container.encode(InternalType.email.rawValue, forKey: .init(.type))
-            try container.encode(email, forKey: .init(stringValue: InternalType.email.rawValue)!)
+            try container.encode(PropertyType.email.rawValue, forKey: .init(.type))
+            try container.encode(email, forKey: .init(stringValue: PropertyType.email.rawValue)!)
         case let .phoneNumber(phoneNumber):
-            try container.encode(InternalType.phoneNumber.rawValue, forKey: .init(.type))
-            try container.encode(phoneNumber, forKey: .init(stringValue: InternalType.phoneNumber.rawValue)!)
+            try container.encode(PropertyType.phoneNumber.rawValue, forKey: .init(.type))
+            try container.encode(phoneNumber, forKey: .init(stringValue: PropertyType.phoneNumber.rawValue)!)
         case let .formula(formula):
-            try container.encode(InternalType.formula.rawValue, forKey: .init(.type))
-            try container.encode(formula, forKey: .init(stringValue: InternalType.formula.rawValue)!)
+            try container.encode(PropertyType.formula.rawValue, forKey: .init(.type))
+            try container.encode(formula, forKey: .init(stringValue: PropertyType.formula.rawValue)!)
         case let .relation(relation):
-            try container.encode(InternalType.relation.rawValue, forKey: .init(.type))
-            try container.encode(relation, forKey: .init(stringValue: InternalType.relation.rawValue)!)
+            try container.encode(PropertyType.relation.rawValue, forKey: .init(.type))
+            try container.encode(relation, forKey: .init(stringValue: PropertyType.relation.rawValue)!)
         case let .rollup(rollup):
-            try container.encode(InternalType.rollup.rawValue, forKey: .init(.type))
-            try container.encode(rollup, forKey: .init(stringValue: InternalType.rollup.rawValue)!)
+            try container.encode(PropertyType.rollup.rawValue, forKey: .init(.type))
+            try container.encode(rollup, forKey: .init(stringValue: PropertyType.rollup.rawValue)!)
         case let .createdTime(createdTime):
-            try container.encode(InternalType.createdTime.rawValue, forKey: .init(.type))
-            try container.encode(createdTime, forKey: .init(stringValue: InternalType.createdTime.rawValue)!)
+            try container.encode(PropertyType.createdTime.rawValue, forKey: .init(.type))
+            try container.encode(createdTime, forKey: .init(stringValue: PropertyType.createdTime.rawValue)!)
         case let .createdBy(createdBy):
-            try container.encode(InternalType.createdBy.rawValue, forKey: .init(.type))
-            try container.encode(createdBy, forKey: .init(stringValue: InternalType.createdBy.rawValue)!)
+            try container.encode(PropertyType.createdBy.rawValue, forKey: .init(.type))
+            try container.encode(createdBy, forKey: .init(stringValue: PropertyType.createdBy.rawValue)!)
         case let .lastEditedTime(lastEditedTime):
-            try container.encode(InternalType.lastEditedTime.rawValue, forKey: .init(.type))
-            try container.encode(lastEditedTime, forKey: .init(stringValue: InternalType.lastEditedTime.rawValue)!)
+            try container.encode(PropertyType.lastEditedTime.rawValue, forKey: .init(.type))
+            try container.encode(lastEditedTime, forKey: .init(stringValue: PropertyType.lastEditedTime.rawValue)!)
         case let .lastEditedBy(lastEditedBy):
-            try container.encode(InternalType.lastEditedBy.rawValue, forKey: .init(.type))
-            try container.encode(lastEditedBy, forKey: .init(stringValue: InternalType.lastEditedBy.rawValue)!)
+            try container.encode(PropertyType.lastEditedBy.rawValue, forKey: .init(.type))
+            try container.encode(lastEditedBy, forKey: .init(stringValue: PropertyType.lastEditedBy.rawValue)!)
         case .custom:
             break
         }

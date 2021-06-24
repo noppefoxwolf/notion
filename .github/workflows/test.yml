@@ -17,7 +17,7 @@ jobs:
         with:
           swift-version: "5.4"
       - name: Get swift version
-        run: swift --version # Swift 5.3.3
+        run: swift --version
       - name: Run tests
         run: |
           swift test

@@ -124,7 +124,7 @@ extension V1.Pages.Create.Parameter: Encodable {
                 try propertiesContainer.encode(value, forKey: .lastEditedTime)
             case let .lastEditedBy(value):
                 try propertiesContainer.encode(value, forKey: .lastEditedBy)
-            case let .custom:
+            case .custom:
                 break
             }
         }

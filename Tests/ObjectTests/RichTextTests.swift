@@ -47,7 +47,7 @@ class RichTextTests: XCTestCase {
             XCTAssertEqual(text.content, "hogw")
         } else { XCTAssert(false) }
         let data = try! encoder.encode(text)
-        print("\(String(data: data, encoding: .utf8))")
+        print("\(String(data: data, encoding: .utf8)!)")
         let text2 = try! decoder.decode(RichText.self, from: data)
         XCTAssertFalse(text2.annotations.bold)
         if case let .text(text) = text2.type {

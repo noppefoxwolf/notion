@@ -31,8 +31,9 @@ struct TypedAnyCodingKey<Key: CodingKey>: CodingKey, Equatable where Key: RawRep
 }
 
 extension TypedAnyCodingKey: Hashable {
-    var hashValue: Int {
-        self.intValue?.hashValue ?? self.stringValue.hashValue
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(intValue)
+        hasher.combine(stringValue)
     }
 }
 
@@ -61,7 +62,8 @@ struct AnyCodingKey: CodingKey, Equatable {
 }
 
 extension AnyCodingKey: Hashable {
-    var hashValue: Int {
-        self.intValue?.hashValue ?? self.stringValue.hashValue
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(intValue)
+        hasher.combine(stringValue)
     }
 }

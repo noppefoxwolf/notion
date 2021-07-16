@@ -63,11 +63,7 @@ extension V1.Blocks {
                 let children: [Block]
             }
             let parameter = Parameter(children: children)
-            let encoder = JSONEncoder()
-            encoder.dateEncodingStrategy = .formatted(.iso8601Full)
-            encoder.keyEncodingStrategy = .convertToSnakeCase
-            let data = try! encoder.encode(parameter)
-            httpBody = data
+            httpBody = ParameterEncoder().encode(parameter)
         }
         
         public var path: String { "/v1/blocks/\(id)/children" }

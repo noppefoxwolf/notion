@@ -56,11 +56,7 @@ extension V1.Pages {
             }
         }
         public init(parameter: Parameter) {
-            let encoder = JSONEncoder()
-            encoder.dateEncodingStrategy = .formatted(.iso8601Full)
-            encoder.keyEncodingStrategy = .convertToSnakeCase
-            let data = try! encoder.encode(parameter)
-            httpBody = data
+            httpBody = ParameterEncoder().encode(parameter)
         }
         
         public var path: String { "/v1/pages" }
@@ -95,11 +91,7 @@ extension V1.Pages {
         ///         Parameter for a request
         public init(id: Object.Page.ID, parameter: Parameter) {
             self.id = id
-            let encoder = JSONEncoder()
-            encoder.dateEncodingStrategy = .formatted(.iso8601Full)
-            encoder.keyEncodingStrategy = .convertToSnakeCase
-            let data = try! encoder.encode(parameter)
-            httpBody = data
+            httpBody = ParameterEncoder().encode(parameter)
         }
         
         public var path: String { "/v1/pages/\(id)" }

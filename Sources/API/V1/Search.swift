@@ -19,9 +19,8 @@ extension V1.Search {
             struct Parameter: Encodable {
                 let query: String
             }
-            let encoder = JSONEncoder()
-            let data = try! encoder.encode(Parameter(query: query))
-            httpBody = data
+            let parameter = Parameter(query: query)
+            httpBody = ParameterEncoder().encode(parameter)
         }
         
         public var path: String { "/v1/search" }

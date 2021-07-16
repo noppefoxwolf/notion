@@ -91,7 +91,7 @@ extension PageView {
         let id: Page.ID
         
         func fetch() {
-            session.send(V1.Pages.Page(id: id)).sink { result in
+            session.send(V1.Pages.Retrieve(id: id)).sink { result in
                 switch result {
                 case let .success(response):
                     print(response.properties)
@@ -103,7 +103,8 @@ extension PageView {
         }
         
         func fetchBlocks() {
-            session.send(V1.Blocks.Children(id: id)).sink { result in
+            let parameter = V1.Blocks.Children.Parameter(startCursor: "", pageSize: 10)
+            session.send(V1.Blocks.Children(id: id, parameter: parameter)).sink { result in
                 switch result {
                 case let .success(response):
                     self.blocks = response.results
@@ -127,7 +128,8 @@ extension PageView {
         }
         
         func updateProperty() {
-            session.send(V1.Pages.Update(id: id, properties: ["title" : .init(type: .title([.init(type: .text(.init(content: "Updated name")))]))])).sink { result in
+            let parameter = V1.Pages.Update.Parameter(properties: ["title" : .init(type: .title([.init(type: .text(.init(content: "Updated name")))]))], archived: false)
+            session.send(V1.Pages.Update(id: id, parameter: parameter)).sink { result in
                 switch result {
                 case let .success(response):
                     self.page = nil

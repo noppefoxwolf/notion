@@ -60,7 +60,7 @@ extension DatabaseView {
         let id: Database.ID
         
         func fetch() {
-            session.send(V1.Databases.Database(id: id)).sink { result in
+            session.send(V1.Databases.Retrieve(id: id)).sink { result in
                 switch result {
                 case let .success(response):
                     self.database = response
@@ -82,7 +82,8 @@ extension DatabaseView {
         }
         
         func createPage() {
-            session.send(V1.Pages.Create(parent: .init(type: .databaseId(id)), properties: [:], children: [.init(type: .heading1(.init(text: [.init(type: .text(.init(content: "new page")))])))])).sink { result in
+            let parameter = V1.Pages.Create.Parameter(parent: .init(type: .databaseId(id)), properties: [:], children: [.init(type: .heading1(.init(text: [.init(type: .text(.init(content: "new page")))])))])
+            session.send(V1.Pages.Create(parameter: parameter)).sink { result in
                 switch result {
                 case let .success(response):
                     self.pages = []

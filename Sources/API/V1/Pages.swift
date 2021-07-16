@@ -12,8 +12,10 @@ extension V1.Pages {
     /// Retrieve a page
     ///
     /// Limits
+    /// 
     /// Each page property is computed with a limit of 25 page references. Therefore relation property values feature a maximum of 25 relations, rollup property values are calculated based on a maximum of 25 relations, and rich text property values feature a maximum of 25 page mentions.
-    /// https://developers.notion.com/reference/get-page
+    ///
+    /// ``https://developers.notion.com/reference/get-page``
     public struct Retrieve: Request {
         /// - Parameters:
         ///     - id: Identifier for a Notion page

@@ -51,7 +51,7 @@ extension UserView {
         let id: User.ID
         
         func fetch() {
-            session.send(V1.Users.User(id: id)).sink { result in
+            session.send(V1.Users.Retrieve(id: id)).sink { result in
                 switch result {
                 case let .success(response):
                     self.user = response

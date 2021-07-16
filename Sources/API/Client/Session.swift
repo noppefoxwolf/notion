@@ -7,13 +7,16 @@
 
 import Foundation
 
-///
+/// ```swift
+/// let database = try await Session.shared.send(V1.Databases.Retrieve(id: id))
+/// ```
 public class Session {
     /// - returns: Session using shared URLSession.
     public static let shared: Session = Session(session: .shared)
     
     /// Basically use `Session.shared`.
     /// You can use this initializer when use custom `URLSession`.
+    ///
     /// - parameters:
     ///     - session: URLSession
     public init(session: URLSession) {
@@ -24,6 +27,12 @@ public class Session {
     private var authorizationToken: String?
     
     /// Authorization token setter.
+    ///
+    /// Only support internal integration token.
+    /// ```swift
+    /// session.setAuthorization("xxxxx")
+    /// ```
+    ///
     /// - parameters:
     ///     - token: notion authorization token
     ///

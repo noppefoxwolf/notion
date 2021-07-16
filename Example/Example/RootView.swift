@@ -61,7 +61,8 @@ extension RootView {
         var cancellables: [AnyCancellable] = []
         
         func fetchUsers() {
-            session.send(V1.Users.List()).sink { result in
+            let parameter = V1.Users.List.Parameter(startCursor: "", pageSize: 10)
+            session.send(V1.Users.List(parameter: parameter)).sink { result in
                 switch result {
                 case let .success(response):
                     self.users = response.results

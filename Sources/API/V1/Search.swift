@@ -9,6 +9,9 @@ import Foundation
 import Object
 
 extension V1.Search {
+    /// Search
+    ///
+    /// https://developers.notion.com/reference/post-search
     public struct Search: Request {
         
         // TODO: Support Filter, Sort,

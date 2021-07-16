@@ -22,7 +22,15 @@ extension V1.Blocks {
         public typealias Response = Object.List<Object.Block>
     }
     
+    /// Append block children
+    ///
+    /// https://developers.notion.com/reference/patch-block-children
     public struct Append: Request {
+        /// - Parameters:
+        ///     - id:
+        ///         Identifier for a block
+        ///     - children:
+        ///         Child content to append to a container block as an array of block objects
         public init(id: Block.ID, children: [Block]) {
             self.id = id
             struct Parameter: Encodable {

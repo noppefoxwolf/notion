@@ -10,8 +10,13 @@ import Object
 
 extension V1.Pages {
     /// Retrieve a page
-    /// - Parameters id: page_id
-    public struct Page: Request {
+    ///
+    /// Limits
+    /// Each page property is computed with a limit of 25 page references. Therefore relation property values feature a maximum of 25 relations, rollup property values are calculated based on a maximum of 25 relations, and rich text property values feature a maximum of 25 page mentions.
+    /// https://developers.notion.com/reference/get-page
+    public struct Retrieve: Request {
+        /// - Parameters:
+        ///     - id: Identifier for a Notion page
         public init(id: String) {
             self.id = id
         }
@@ -22,12 +27,26 @@ extension V1.Pages {
         public typealias Response = Object.Page
     }
     
+    /// Create a page
+    ///
+    /// Creates a new page in the specified database or as a child of an existing page.
+    /// If the parent is a database, the property values of the new page in the properties parameter must conform to the parent database's property schema.
+    /// If the parent is a page, the only valid property is title.
+    /// The new page may include page content, described as blocks in the children parameter.
+    /// https://developers.notion.com/reference/post-page
     public struct Create: Request {
         public struct Parameter {
             public let parent: Parent
             public let properties: [String : Property.TypeValue]
             public let children: [Block]
 
+            /// - Parameters:
+            ///     - parent:
+            ///         A database parent or page parent
+            ///     - properties:
+            ///         Property values of this page. The keys are the names or IDs of the property and the values are property values.
+            ///     - children:
+            ///         Page content for the new page as an array of block objects
             public init(parent: Parent, properties: [String : Property.TypeValue], children: [Block]) {
                 self.parent = parent
                 self.properties = properties
@@ -48,14 +67,32 @@ extension V1.Pages {
         public typealias Response = Object.Page
     }
     
+    /// Update page
+    ///
+    /// https://developers.notion.com/reference/patch-page
     public struct Update: Request {
-        public init(id: Object.Page.ID, properties: [String : Property]) {
-            self.id = id
+        public struct Parameter: Encodable {
+            let properties: [String : Property]
+            let archived: Bool
             
-            struct Parameter: Encodable {
-                let properties: [String : Property]
+            /// - Parameters:
+            ///     - properties:
+            ///         Property values to update for this page. The keys are the names or IDs of the property and the values are property values.
+            ///     - archived:
+            ///         Set to true to archive (delete) a page. Set to false to un-archive (restore) a page.
+            public init(properties: [String : Property], archived: Bool) {
+                self.properties = properties
+                self.archived = archived
             }
-            let parameter = Parameter(properties: properties)
+        }
+        
+        /// - Parameters:
+        ///     - id:
+        ///         Identifier for a Notion page
+        ///     - parameter:
+        ///         Parameter for a request
+        public init(id: Object.Page.ID, parameter: Parameter) {
+            self.id = id
             let encoder = JSONEncoder()
             encoder.dateEncodingStrategy = .formatted(.iso8601Full)
             encoder.keyEncodingStrategy = .convertToSnakeCase

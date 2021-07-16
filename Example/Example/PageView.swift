@@ -103,8 +103,7 @@ extension PageView {
         }
         
         func fetchBlocks() {
-            let parameter = V1.Blocks.Children.Parameter(startCursor: "", pageSize: 10)
-            session.send(V1.Blocks.Children(id: id, parameter: parameter)).sink { result in
+            session.send(V1.Blocks.Children(id: id)).sink { result in
                 switch result {
                 case let .success(response):
                     self.blocks = response.results

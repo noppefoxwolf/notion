@@ -6,6 +6,7 @@
 //
 
 import Foundation
+@_spi(API)
 import Object
 
 extension V1.Blocks {
@@ -14,31 +15,13 @@ extension V1.Blocks {
     /// https://developers.notion.com/reference/get-block-children
     public struct Children: Request {
         /// - Parameters:
-        ///     - startCursor:
-        ///         If supplied, this endpoint will return a page of results starting after the cursor provided. If not supplied, this endpoint will return the first page of results.
-        ///     - pageSize:
-        ///         The number of items from the full list desired in the response. Maximum: 100
-        public struct Parameter: Encodable {
-            let startCursor: String
-            let pageSize: Int32
-            
-            public init(startCursor: String, pageSize: Int32) {
-                self.startCursor = startCursor
-                self.pageSize = pageSize
-            }
-        }
-        
-        /// - Parameters:
         ///     - id:
         ///         Identifier for a block
         ///     - parameter:
         ///         Parameter for request
-        public init(id: Block.ID, parameter: Parameter) {
+        public init(id: Block.ID, parameter: PaginationParameter = .default) {
             self.id = id
-            queryItems = [
-                URLQueryItem(name: "start_cursor", value: parameter.startCursor),
-                URLQueryItem(name: "page_size", value: "\(parameter.pageSize)")
-            ]
+            queryItems = parameter.queryItems
         }
         
         public var path: String { "/v1/blocks/\(id)/children" }

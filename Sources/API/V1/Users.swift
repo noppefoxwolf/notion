@@ -6,6 +6,7 @@
 //
 
 import Foundation
+@_spi(API)
 import Object
 
 extension V1.Users {
@@ -28,26 +29,8 @@ extension V1.Users {
     ///
     /// https://developers.notion.com/reference/get-users
     public struct List: Request {
-        /// - Parameters:
-        ///     - startCursor:
-        ///         If supplied, this endpoint will return a page of results starting after the cursor provided. If not supplied, this endpoint will return the first page of results.
-        ///     - pageSize:
-        ///         The number of items from the full list desired in the response. Maximum: 100
-        public struct Parameter: Encodable {
-            let startCursor: String
-            let pageSize: Int32
-            
-            public init(startCursor: String, pageSize: Int32) {
-                self.startCursor = startCursor
-                self.pageSize = pageSize
-            }
-        }
-        
-        public init(parameter: Parameter) {
-            queryItems = [
-                URLQueryItem(name: "start_cursor", value: parameter.startCursor),
-                URLQueryItem(name: "page_size", value: "\(parameter.pageSize)")
-            ]
+        public init(parameter: PaginationParameter = .default) {
+            queryItems = parameter.queryItems
         }
         
         public var path: String { "/v1/users" }

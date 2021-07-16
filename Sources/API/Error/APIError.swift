@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// https://developers.notion.com/reference/errors
 public struct APIError: Error, Decodable {
     let object: String
     let status: Int

@@ -4,6 +4,11 @@
 
 ![](https://github.com/noppefoxwolf/notion/blob/main/.github/fox.png)
 
+# Required
+
+- Swift 5.5 (v0.2+)
+- Swift 5.3 (v0.1+)
+
 # Installation
 
 ## Xcode
@@ -33,9 +38,7 @@ import notion
 
 let session = Session.shared
 session.setAuthorization(token: "<<AUTHORIZE TOKEN>>")
-session.send(V1.Users.List()).sink { result in
-    // DO SOMETHING
-}.store(in: &cancellables)
+let users = try await session.send(V1.Users.List())
 ```
 
 # Support features

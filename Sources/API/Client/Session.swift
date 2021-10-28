@@ -105,7 +105,7 @@ extension Session {
 }
 #endif
 
-#if compiler(>=5.5)
+#if compiler(>=5.5.2)
 extension Session {
     @available(watchOS 8.0, *)
     @available(tvOS 15.0, *)
